@@ -41,7 +41,7 @@ function getEmitter() {
         off: function (event, context) {
             this.events.forEach((v, k) => {
                 if (k.indexOf(event) === 0 &&
-                (k.length === event.length || event[k.length] === '.')) {
+                (k.length === event.length || k[event.length] === '.')) {
                     let eventsToOff = v.filter((e) => e.context === context);
                     for (let i = 0; i < eventsToOff.length; i++) {
                         let current = this.events.get(k);
