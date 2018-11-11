@@ -40,13 +40,12 @@ function getEmitter() {
          */
         off: function (event, context) {
             this.events.forEach((v, k) => {
-                if (k.indexOf(event) === 0 &&
-                (k.length === event.length || k[event.length] === '.')) {
-                    let eventsToOff = v.filter((e) => e.context === context);
-                    for (let i = 0; i < eventsToOff.length; i++) {
-                        let current = this.events.get(k);
-                        current.splice(current.indexOf(eventsToOff[i]), 1);
-                    }
+                if (k.startsWith(event + '.') || k === event) {
+                    v.filter(e => e.context === context)
+                        .forEach(e => {
+                            let current = this.events.get(k);
+                            current.splice(current.indexOf(e), 1);
+                        });
                 }
             });
 
@@ -63,9 +62,7 @@ function getEmitter() {
             let toEmit = event.split('.');
             for (let i = 0; i < toEmit.length; i++) {
                 let currentEvent = toEmit.slice(0, toEmit.length - i).join('.');
-                if (this.events.has(currentEvent)) {
-                    ev = this.events.get(currentEvent);
-                }
+                ev = this.events.get(currentEvent);
                 if (ev) {
                     ev.forEach(e => {
                         if (e.handler.times !== 0 && e.handler.count % e.handler.frequency === 0) {
